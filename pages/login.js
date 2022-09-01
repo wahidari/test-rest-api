@@ -13,6 +13,7 @@ export default function Login() {
   const [input, setInput] = useState(
     { email: "", password: "" }
   )
+  const [inputError, setInputError] = useState({email: false, password: false})
   const [error, setError] = useState()
   const [success, setSuccess] = useState()
 
@@ -25,23 +26,38 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    // console.log(input)
-    try {
-      const { data } = await axios.post('https://mitramas-test.herokuapp.com/auth/login', input);
-      // console.log(data)
-      if (data.access_token) {
-        setSuccess("Success Login")
-        setError("")
-        nookies.set(null, 'token', data.access_token, { path: '/'})
-        Router.replace("/");
-      } else {
-        setSuccess("")
-        setError("Error Login")
+    let error = false;
+
+    if (!input.password) {
+      setInputError({ ...inputError, password: true });
+      error = true;
+    }
+    if (!input.email) {
+      setInputError({ ...inputError, email: true });
+      error = true;
+    }
+
+    if(!error) {
+      setInputError({ email: false, password: false});
+      try {
+        const { data } = await axios.post('https://mitramas-test.herokuapp.com/auth/login', input);
+        // console.log(data)
+        if (data.access_token) {
+          setSuccess("Success Login")
+          setError("")
+          nookies.set(null, 'token', data.access_token, { path: '/' })
+          Router.replace("/");
+        } else {
+          setSuccess("")
+          setError("Error Login")
+        }
+      } catch (error) {
+        setError(error.response.statusText)
+        setTimeout(() => {
+          Router.push("/login");
+        }, 1000);
+        console.log(error);
       }
-    } catch (error) {
-      setError(error.response.statusText)
-      Router.reload();
-      console.log(error);
     }
   }
 
@@ -53,26 +69,24 @@ export default function Login() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="bg-slate-50 dark:bg-neutral-900 min-h-screen p-8 md:p-12">
-
-        <div className="max-w-lg mx-auto">
-
-          <section className="text-gray-700 body-font py-8 max-w-sm mx-auto">
-            <h1 className="text-center font-medium text-3xl dark:text-white mb-4">Login</h1>
-            <Input onChange={handleChange} label="Email" name="email" placeholder="Email" type="text" />
-            <InputPassword onChange={handleChange} label="Password" name="password" placeholder="Password" />
-            <Button onClick={handleSubmit} className="w-full">Login</Button>
-            {error && <p className="text-red-500 text-center mt-4 text-sm font-medium">{error}</p>}
-            {success && <p className="text-green-500 text-center mt-4 text-sm font-medium">{success}</p>}
-          </section>
-          <div onClick={() => setDarkMode(!darkMode)} className="transition-all cursor-pointer w-10 h-6 dark:bg-blue-500 bg-neutral-200 rounded-full relative mx-auto">
+      <main className="bg-slate-50 dark:bg-neutral-900 min-h-screen flex items-center justify-center">
+        <div className="text-gray-700 shadow rounded-md w-96 p-8 bg-white dark:bg-neutral-800 m-8 dark:border dark:border-neutral-700">
+          <h1 className="text-center font-medium text-3xl dark:text-white mb-4">Login</h1>
+          
+          <Input onChange={handleChange} label="Email" name="email" placeholder="Email" type="text" />
+          {inputError.email && <p className="text-red-500 text-center mb-2 text-xs font-medium">Email is required</p>}
+          
+          <InputPassword onChange={handleChange} label="Password" name="password" placeholder="Password" />
+          {inputError.password && <p className="text-red-500 text-center mb-2 text-xs font-medium">Password is required</p>}
+          
+          <Button onClick={handleSubmit} className="w-full py-2 mt-2">Login</Button>
+          {error && <p className="text-red-500 text-center mt-4 text-sm font-medium">{error}. Check Email and Password</p>}
+          {success && <p className="text-green-500 text-center mt-4 text-sm font-medium">{success}</p>}
+          <div onClick={() => setDarkMode(!darkMode)} className="transition-all cursor-pointer w-10 h-6 dark:bg-blue-500 bg-neutral-200 rounded-full relative mx-auto mt-8">
             <div className="h-4 w-4 bg-white rounded-full absolute top-1 transition-all dark:left-5 left-1"></div>
           </div>
-
         </div>
-
       </main>
-
     </>
   )
 }
