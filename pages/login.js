@@ -25,10 +25,10 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log(input)
+    // console.log(input)
     try {
       const { data } = await axios.post('https://mitramas-test.herokuapp.com/auth/login', input);
-      console.log(data)
+      // console.log(data)
       if (data.access_token) {
         setSuccess("Success Login")
         setError("")

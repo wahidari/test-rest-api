@@ -46,7 +46,7 @@ export default function Home() {
   }
 
   async function handleDeleteCustomer() {
-    console.log(modalData.id)
+    // console.log(modalData.id)
     try {
       const res = await axios.delete('https://mitramas-test.herokuapp.com/customers', {
         data: { id: modalData.id }

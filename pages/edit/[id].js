@@ -54,10 +54,6 @@ export default function Edit({ id }) {
   }
 
   useEffect(() => {
-    console.table(customer)
-  }, [customer])
-
-  useEffect(() => {
     if (!fetched || !customer) {
       getCustomer()
     }
