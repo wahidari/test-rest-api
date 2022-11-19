@@ -104,10 +104,10 @@ export default function Home() {
   function handleSortChange(e) {
     setSort(e.target.value)
     if (e.target.value == "descending") {
-      let descendingUser = customer.sort((a, b) => a.name < b.name ? 1 : -1)
+      let descendingUser = customer.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1)
       setTempCustomer(descendingUser)
     } else {
-      let ascendingUser = customer.sort((a, b) => a.name > b.name ? 1 : -1)
+      let ascendingUser = customer.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1)
       setTempCustomer(ascendingUser)
     }
   };
