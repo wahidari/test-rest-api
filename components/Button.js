@@ -25,7 +25,7 @@ Button.secondary = ({ className, type, value, onClick, disabled, pills, children
       onClick={onClick}
       value={value}
       className={`
-				text-sm text-neutral-800 dark:text-neutral-300 transition-all outline-none px-3 py-1.5 font-medium bg-gray-50 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-800
+				text-sm text-neutral-800 dark:text-neutral-300 transition-all outline-none px-3 py-1.5 font-medium bg-gray-50 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-400
 				${className ? className + " " : ""}
 				${pills ? "rounded-full" : "rounded"}
 				${disabled ? "cursor-not-allowed" : "hover:bg-gray-100 dark:hover:bg-neutral-900"} 
@@ -44,7 +44,7 @@ Button.green = ({ className, type, value, onClick, disabled, pills, children, ..
       onClick={onClick}
       value={value}
       className={`
-				text-sm text-white transition-all outline-none px-3 py-1.5 font-medium bg-emerald-500
+				text-sm text-white transition-all outline-none px-3 py-1.5 font-medium bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-400
 				${className ? className + " " : ""}
 				${pills ? "rounded-full" : "rounded"}
 				${disabled ? "cursor-not-allowed" : "hover:bg-emerald-600"} 
@@ -101,7 +101,7 @@ Button.red = ({ className, type, value, onClick, disabled, pills, children, ...r
       onClick={onClick}
       value={value}
       className={`
-				text-sm text-white transition-all outline-none px-3 py-1.5 font-medium bg-red-500
+				text-sm text-white transition-all outline-none px-3 py-1.5 font-medium bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400
 				${className ? className + " " : ""}
 				${pills ? "rounded-full" : "rounded"}
 				${disabled ? "cursor-not-allowed" : "hover:bg-red-600"} 
