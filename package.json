@@ -2,6 +2,7 @@
   "name": "test-rest-api",
   "version": "0.1.0",
   "private": true,
+  "author": "wahidari",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -13,9 +14,11 @@
     "@heroicons/react": "^1.0.6",
     "axios": "^0.27.2",
     "next": "12.2.0",
+    "next-themes": "^0.2.1",
     "nookies": "^2.5.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hot-toast": "^2.4.0",
     "react-loading-skeleton": "^3.1.0",
     "tailwind-scrollbar": "^1.3.1"
   },
