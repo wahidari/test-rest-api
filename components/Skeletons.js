@@ -1,19 +1,28 @@
-import { GlobalContext } from "@utils/GlobalContext";
-import { useContext } from "react";
+import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useTheme } from 'next-themes';
 
 export default function Skeletons({ className }) {
-  const { darkMode } = useContext(GlobalContext);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  // useEffect only runs on the client, so now we can safely show the UI
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
 
   return (
-    darkMode ?
+    theme === "dark" ?
       <Skeleton
         className={`${className ? className + " " : ""} h-10 mb-2`} baseColor="#262626" highlightColor="#404040"
       />
       :
       <Skeleton
-        className={`${className ? className + " " : ""} h-10 mb-2 dark:bg-gray-500 dark:text-gray-400`}
+        className={`${className ? className + " " : ""} h-10 mb-2`}
       />
   )
 }
