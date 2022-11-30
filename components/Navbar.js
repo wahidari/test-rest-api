@@ -1,27 +1,28 @@
-import { useContext } from "react";
 import Link from "next/link";
-import { GlobalContext } from "@utils/GlobalContext";
-import { LogoutIcon } from "@heroicons/react/outline";
 import Logout from '@utils/logout';
+import ThemeToggle from "@components/ThemeToggle";
 
 export default function Navbar() {
-  const { darkMode, setDarkMode } = useContext(GlobalContext);
   return (
-    <div className="px-8 py-3 flex justify-between items-center shadow dark:border-b dark:border-b-neutral-800">
+    <div className="px-8 py-2.5 flex justify-between items-center shadow dark:border-b dark:border-b-neutral-800">
       <Link href="/">
-        <a className="text-blue-500 hover:text-blue-700 font-medium">Dashboard</a>
+        <a aria-label="Dashboard">
+          <svg className="fill-neutral-600 dark:fill-neutral-300 h-7 w-7" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fillRule="evenodd" clipRule="evenodd" d="M22.3217 44.9902C34.6497 44.9902 44.6435 34.9964 44.6435 22.6685C44.6435 10.3405 34.6497 0.34668 22.3217 0.34668C9.99374 0.34668 -6.10352e-05 10.3405 -6.10352e-05 22.6685C-6.10352e-05 34.9964 9.99374 44.9902 22.3217 44.9902ZM21.7711 32.4872C22.6817 33.3229 23.9208 33.7917 25.2126 33.7887L25.2127 33.7886C26.5041 33.7894 27.7428 33.3218 28.6564 32.4891C29.5696 31.6565 30.0832 30.5269 30.0835 29.3487C30.084 28.1705 29.5712 27.0406 28.6582 26.2075L18.1344 16.6064C17.7758 16.3138 17.5651 15.8995 17.5518 15.4607C17.5385 15.0221 17.7236 14.5978 18.0637 14.2875C18.4038 13.9769 18.869 13.8082 19.35 13.8204C19.8307 13.8326 20.285 14.0248 20.6055 14.352L26.4521 19.6858C27.6957 20.7477 29.4571 21.1397 31.0969 20.719C32.7367 20.2983 34.0161 19.1263 34.4707 17.6286C34.9253 16.1312 34.4889 14.5256 33.3198 13.3953V13.3955L31.1723 11.4363L28.9662 13.4489L31.1138 15.4116C31.4724 15.704 31.6831 16.1185 31.6965 16.5571C31.7098 16.9958 31.5246 17.4202 31.1845 17.7305C30.8444 18.0408 30.3792 18.2097 29.8985 18.1976C29.4175 18.1852 28.9635 17.993 28.6426 17.666L22.7961 12.3321C21.5587 11.2474 19.7866 10.8372 18.1319 11.2524C16.4772 11.6676 15.1844 12.8471 14.7293 14.3567C14.2742 15.8663 14.7239 17.483 15.9128 18.6118L26.4366 28.2129C26.7952 28.5055 27.0059 28.9198 27.0193 29.3586C27.0326 29.7972 26.8474 30.2215 26.5073 30.5318C26.1672 30.8424 25.702 31.0111 25.2211 30.9989C24.7404 30.9867 24.2861 30.7945 23.9655 30.4674L18.1189 25.1335C16.8759 24.0711 15.1149 23.6782 13.4749 24.0981C11.8349 24.5181 10.5546 25.6893 10.0992 27.1865C9.64352 28.6839 10.0791 30.2895 11.2471 31.4203H11.2474L13.3949 33.3796L15.601 31.367L13.4534 29.4077C13.0948 29.1153 12.8841 28.7008 12.8707 28.2623C12.8574 27.8235 13.0423 27.3991 13.3827 27.0888C13.7228 26.7785 14.188 26.6096 14.6687 26.6218C15.1497 26.6342 15.6037 26.8264 15.9246 27.1533L21.7711 32.4872Z" />
+          </svg>
+        </a>
       </Link>
-      <div className="flex items-center space-x-4">
-        <div onClick={() => setDarkMode(!darkMode)} className="transition-all cursor-pointer w-10 h-6 dark:bg-blue-500 bg-neutral-200 rounded-full relative">
-          <div className="h-4 w-4 bg-white rounded-full absolute top-1 transition-all dark:left-5 left-1"></div>
-        </div>
+      <div className="flex items-center gap-8">
+        <Link href="/">
+          <a className="font-semibold text-sm transition-all text-neutral-600 dark:text-neutral-300 hover:text-sky-600 dark:hover:text-sky-600">Dashboard</a>
+        </Link>
         <button
           onClick={Logout}
-          className="transition-all py-2 px-2 flex justify-start items-center gap-3 text-sm font-semibold rounded text-red-600 hover:text-red-400"
+          className="transition-all py-2 flex justify-start items-center gap-3 text-sm font-semibold text-neutral-600 dark:text-neutral-300 hover:text-red-600 dark:hover:text-red-600"
         >
-          <LogoutIcon className="w-4 h-4" />
-          Log out
+          Logout
         </button>
+        <ThemeToggle />
       </div>
     </div>
   )
