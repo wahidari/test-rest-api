@@ -35,6 +35,7 @@ export default function InputPassword({ id, className, label, name, placeholder,
           `}
         />
         <button
+          aria-label="Show Password"
           onClick={() => setShowPassword(!showPassword)}
           className="z-10 mr-1.5 pr-1.5 pl-2.5 py-1 rounded-md absolute right-0"
         >
