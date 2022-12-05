@@ -1,5 +1,4 @@
-import { useContext, useState } from "react";
-import { GlobalContext } from "@utils/GlobalContext";
+import { useState } from "react";
 import Router from "next/router";
 import Head from 'next/head'
 import axios from 'axios';
@@ -7,15 +6,25 @@ import Input from '@components/Input';
 import Button from '@components/Button';
 import nookies from 'nookies';
 import InputPassword from "@components/InputPassword";
+import ThemeToggle from "@components/ThemeToggle";
+
+function Spinner() {
+  return (
+    <svg aria-hidden="true" role="status" className="inline w-4 h-4 text-white animate-spin -mt-1 mr-2" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB" />
+      <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor" />
+    </svg>
+  )
+}
 
 export default function Login() {
-  const { darkMode, setDarkMode } = useContext(GlobalContext);
   const [input, setInput] = useState(
     { email: "", password: "" }
   )
   const [inputError, setInputError] = useState({email: false, password: false})
   const [error, setError] = useState()
   const [success, setSuccess] = useState()
+  const [loading, setLoading] = useState(false)
 
   function handleChange(e) {
     setInput({
@@ -38,6 +47,7 @@ export default function Login() {
     }
 
     if(!error) {
+      setLoading(true)
       setInputError({ email: false, password: false});
       try {
         const { data } = await axios.post('https://mitramas-test.herokuapp.com/auth/login', input);
@@ -56,7 +66,9 @@ export default function Login() {
         setTimeout(() => {
           Router.push("/login");
         }, 1000);
-        console.log(error);
+        console.error(error);
+      } finally {
+        setLoading(false)
       }
     }
   }
@@ -70,21 +82,34 @@ export default function Login() {
       </Head>
 
       <main className="bg-slate-50 dark:bg-neutral-900 min-h-screen flex items-center justify-center">
-        <div className="text-gray-700 shadow rounded-md w-96 p-8 bg-white dark:bg-neutral-800 m-8 dark:border dark:border-neutral-700">
-          <h1 className="text-center font-medium text-3xl dark:text-white mb-4">Login</h1>
+        <div className="text-gray-700 shadow-md rounded-md w-96 p-8 bg-white dark:bg-neutral-900 m-8 dark:border dark:border-neutral-700">
+          <h1 className="text-center font-semibold text-3xl dark:text-white mb-4">Login</h1>
           
           <Input onChange={handleChange} label="Email" name="email" placeholder="Email" type="text" />
           {inputError.email && <p className="text-red-500 text-center mb-2 text-xs font-medium">Email is required</p>}
           
           <InputPassword onChange={handleChange} label="Password" name="password" placeholder="Password" />
           {inputError.password && <p className="text-red-500 text-center mb-2 text-xs font-medium">Password is required</p>}
-          
-          <Button onClick={handleSubmit} className="w-full py-2 mt-2">Login</Button>
+       
+          <Button onClick={handleSubmit} className="w-full py-2 mt-6">
+            {loading ?
+            <span>
+              <Spinner />
+              Login
+            </span>
+            :  
+            <>
+              Login
+            </>
+          }
+          </Button>
           {error && <p className="text-red-500 text-center mt-4 text-sm font-medium">{error}. Check Email and Password</p>}
           {success && <p className="text-green-500 text-center mt-4 text-sm font-medium">{success}</p>}
-          <div onClick={() => setDarkMode(!darkMode)} className="transition-all cursor-pointer w-10 h-6 dark:bg-blue-500 bg-neutral-200 rounded-full relative mx-auto mt-8">
-            <div className="h-4 w-4 bg-white rounded-full absolute top-1 transition-all dark:left-5 left-1"></div>
+          
+          <div className="flex justify-center">
+            <ThemeToggle className="mt-8"/>
           </div>
+
         </div>
       </main>
     </>
