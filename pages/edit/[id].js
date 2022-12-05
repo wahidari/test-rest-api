@@ -9,9 +9,9 @@ import Button from '@components/Button';
 import Select from "@components/Select";
 import Navbar from "@components/Navbar";
 import Skeletons from "@components/Skeletons";
+import useToast from '@utils/useToast';
 
 export async function getServerSideProps(context) {
-  // Parse
   const cookies = nookies.get(context)
 
   if (!cookies.token) {
@@ -30,12 +30,11 @@ export async function getServerSideProps(context) {
 }
 
 export default function Edit({ id }) {
-
   const idCustomer = id
   const [error, setError] = useState({ name: false, address: false, country: false, phone_number: false, job_title: false, status: false });
-  const [success, setSuccess] = useState();
-  const [customer, setCustomer] = useState()
-  const [fetched, setFetched] = useState(false)
+  const [customer, setCustomer] = useState();
+  const [fetched, setFetched] = useState(false);
+  const { updateToast, pushToast, dismissToast } = useToast();
 
   async function getCustomer() {
     try {
@@ -49,7 +48,7 @@ export default function Edit({ id }) {
       if (error.response.status == 401) {
         Logout()
       }
-      console.log(error)
+      console.error(error)
     }
   }
 
@@ -101,18 +100,25 @@ export default function Edit({ id }) {
 
     if (!inputError) {
       setError({ name: false, address: false, country: false, phone_number: false, job_title: false, status: false });
+      const toastId = pushToast({
+        message: "Updating Customer",
+        isLoading: true,
+      });
       try {
         const res = await axios.put('https://mitramas-test.herokuapp.com/customers',
           customer
         )
         if (res.status == 200) {
-          setSuccess(res.data.message)
+          updateToast({ toastId, message: res.data.message, isError: false });
           setTimeout(() => {
             Router.push("/");
           }, 1000)
+        } else {
+          updateToast({ toastId, message: "Failed Update Customer", isError: true });
         }
       } catch (error) {
-        console.log(error)
+        updateToast({ toastId, message: "Failed Update Customer", isError: true });
+        console.error(error)
       }
     }
   }
@@ -154,7 +160,6 @@ export default function Edit({ id }) {
                   <Select.option value="false">Inactive</Select.option>
                 </Select>
 
-                {success && <p className="text-green-500 text-center my-4 text-sm font-medium">{success}</p>}
                 <Button onClick={handleSubmit} className="w-full">Save Customer</Button>
               </>
               :

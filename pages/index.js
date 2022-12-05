@@ -9,10 +9,10 @@ import Badge from '@components/Badge';
 import Skeletons from '@components/Skeletons';
 import Input from '@components/Input';
 import Select from '@components/Select';
-import Button from '@components/Button';
 import DeleteModal from '@components/DeleteModal';
 import Text from '@components/Text';
 import Navbar from '@components/Navbar';
+import useToast from '@utils/useToast';
 
 export async function getServerSideProps(context) {
   const cookies = nookies.get(context)
@@ -30,7 +30,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home() {
-
   const [fetched, setFetched] = useState(false)
   const [customer, setCustomer] = useState()
   const [tempCustomer, setTempCustomer] = useState()
@@ -39,6 +38,7 @@ export default function Home() {
   const [filter, setFilter] = useState()
   const [openDeleteModal, setOpenDeleteModal] = useState(false)
   const [modalData, setModalData] = useState({ id: "", name: "" });
+  const { updateToast, pushToast } = useToast();
 
   function handleShowModal(id, name) {
     setModalData({ id: id, name: name })
@@ -46,16 +46,23 @@ export default function Home() {
   }
 
   async function handleDeleteCustomer() {
-    // console.log(modalData.id)
+    const toastId = pushToast({
+      message: "Deleting Customer",
+      isLoading: true,
+    });
     try {
       const res = await axios.delete('https://mitramas-test.herokuapp.com/customers', {
         data: { id: modalData.id }
       })
       if (res.status == 200) {
         setFetched(false)
+        updateToast({ toastId, message: res.data.message, isError: false });
+      } else {
+        updateToast({ toastId, message: "Failed Delete Customer", isError: true });
       }
     } catch (error) {
-      console.log(error)
+      console.error(error)
+      updateToast({ toastId, message: "Failed Delete Customer", isError: true });
     }
     setOpenDeleteModal(false);
   }
@@ -72,7 +79,7 @@ export default function Home() {
       if (error.response.status == 401) {
         Logout()
       }
-      console.log(error)
+      console.error(error)
     }
   }
 
@@ -132,27 +139,27 @@ export default function Home() {
         <Navbar />
 
         <div className="p-8">
-          <div className="flex flex-wrap items-center justify-between">
-            <Link href="/create">
-              <a className="bg-teal-600 hover:bg-teal-600 rounded transition-all mb-6 text-sm font-medium text-white px-3 py-1.5 shadow">Add Customer</a>
-            </Link>
+          <div className="flex flex-wrap-reverse items-center justify-between gap-x-4">
             <div className="flex flex-wrap gap-x-3 mb-4">
-              <Input name="search" label="Search Name" onChange={handleSearchChange} value={search} className=" !w-32 !md:w-40 !p-1.5" placeholder="Search Name" />
-              <Select name="sort" label="Sort Name" onChange={handleSortChange} value={sort ? sort : "Sort By"} className=" !w-32 !md:w-40 !p-1.5">
+              <Input name="search" label="Search Name" onChange={handleSearchChange} value={search} className=" !w-32 !md:w-40 !py-1.5" placeholder="Search Name" />
+              <Select name="sort" label="Sort Name" onChange={handleSortChange} value={sort ? sort : "Sort By"} className=" !w-32 !md:w-40 !py-1.5">
                 <Select.option value="" hidden>Sort By</Select.option>
                 <Select.option value="descending">Descending</Select.option>
                 <Select.option value="ascending">Ascending</Select.option>
               </Select>
-              <Select name="filter" label="Filter Status" onChange={handleFilterChange} value={filter} className=" !w-32 !md:w-40 !p-1.5">
+              <Select name="filter" label="Filter Status" onChange={handleFilterChange} value={filter} className=" !w-32 !md:w-40 !py-1.5">
                 <Select.option value="all">All</Select.option>
                 <Select.option value="true">Active</Select.option>
                 <Select.option value="false">Inactive</Select.option>
               </Select>
               <div>
                 <p className="text-sm font-medium dark:text-white mb-2">Clear</p>
-                <Button.red onClick={handleReset} className="!px-10 !w-32 shadow">Reset</Button.red>
+                <button onClick={handleReset} className="!px-10 !w-32 text-neutral-800 dark:text-gray-200 text-sm border border-gray-300 dark:border-neutral-700 rounded py-1.5 font-medium transition-all hover:bg-neutral-200 dark:hover:bg-neutral-800">Reset</button>
               </div>
             </div>
+            <Link href="/create">
+              <a className="bg-emerald-500 hover:bg-emerald-600 rounded transition-all mb-6 md:mb-1 text-sm font-medium text-white px-3 py-1.5 shadow focus:outline-none focus:ring-2 focus:ring-emerald-400">Add Customer</a>
+            </Link>
           </div>
           {fetched ?
             <TableSimple
@@ -210,7 +217,7 @@ export default function Home() {
           >
             <Text className="pb-2 !text-sm">Sure want to delete <span className="font-semibold">{modalData.name}</span> ?</Text>
           </DeleteModal>
-          
+
         </div>
       </main>
     </div>
